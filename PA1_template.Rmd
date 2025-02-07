@@ -8,11 +8,25 @@ output:
 
 ## Loading and preprocessing the data
 ```{r}
-myRawData <- read.csv("./activity.csv")
+  myRawData <- read.csv("./activity.csv")
+  myRawData$date <- as.Date(myRawData$date) ##preprocessing dates to make them easier to work with
 ```
 
 ## What is mean total number of steps taken per day?
-
+```{r}
+myDays <- unique(myRawData$date)
+myStepsPerDay <- data.frame(date=character(), steps=numeric())
+  
+for(i in myDays){
+  dataOnMyDay <- subset(myRawData, date == i)
+  totalStepsOnMyDay <- sum(dataOnMyDay$steps, na.rm=TRUE)
+  mySteps <- data.frame(date=i, steps=totalStepsOnMyDay)
+  myStepsPerDay <- rbind(myStepsPerDay, mySteps)
+}
+hist(myStepsPerDay$steps, breaks=length(myDays))
+meanSteps <- mean(myStepsPerDay$steps) ##mean total steps taken per day
+medianSteps <- median(myStepsPerDay$steps) 
+```
 
 
 ## What is the average daily activity pattern?

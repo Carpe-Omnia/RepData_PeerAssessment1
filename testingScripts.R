@@ -61,7 +61,10 @@ dt <- function() {
   ggplot(myStepsPerInterval, aes(x=interval, y=steps)) +geom_line() + xlab("")
   myMostActiveIndex <- which.max(myStepsPerInterval$steps)
   myMostActiveInterval <- myStepsPerInterval[myMostActiveIndex, 1]
-  print(paste("my most active interval is", myMostActiveInterval, sep=" "))
+  minutes <- (myMostActiveInterval * 1440) %% 60
+  hours <- (myMostActiveInterval * 1440) %/% 60
+  myPrintableInterval <- paste(hours, minutes, sep=":")
+  print(paste("my most active interval is", myPrintableInterval, sep=" "))
   
   #imputing missing values
   myImputedData <- myData
@@ -100,8 +103,6 @@ dt <- function() {
       }
       else {myImputedData[i, 4] <- "weekday"}
   }
-  #View(myImputedData)
-  
   myStepsPerIntervalWday <- data.frame(interval=times(), steps=numeric(), wkday=character())
   for (i in myTimes){
     dataAtMyTimeWeekday <- subset(myImputedData, interval == i & wday == "weekday")
@@ -113,7 +114,6 @@ dt <- function() {
     myStepsPerIntervalWday <- rbind(myStepsPerIntervalWday, myStepsAtIntervalWeekday)
     myStepsPerIntervalWday <- rbind(myStepsPerIntervalWday, myStepsAtIntervalWeekend)
   }
-  View(myStepsPerIntervalWday)
   ggplot(myStepsPerIntervalWday, aes(y=steps, x=interval)) +geom_line() + xlab("") + facet_grid(rows = vars(wkday))
   
 }
